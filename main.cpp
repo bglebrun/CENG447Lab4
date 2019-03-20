@@ -1,6 +1,14 @@
-#include "includes.h"
+#define F_CPU 16000000
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <string.h>
+#include "strings.h"
 
-char message[32];
+#define USART_BAUDRATE 9600
+#define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+
+char iobuff[32];
 int i = 0;
 
 int main() {
@@ -24,15 +32,15 @@ ISR(USART_RX_vect){
     i = 0;
     // process string here
     
-    // clear message buffer when done
-    memset(message, 0, sizeof message);
+    // clear io buffer when done
+    memset(iobuff, 0, sizeof iobuff);
   } else {
     // continue to write to a fifo buffer
-    message[i++] = inByte;
+    iobuff[i++] = inByte;
     inByte = 0;
   }
 }
 
 ISR(USART_TX_vect){
-
+  // idk do we even need this?
 }
