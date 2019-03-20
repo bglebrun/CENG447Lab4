@@ -8,4 +8,5 @@
 *.lst
 *.map
 *.srec
+.vscode
 .DS_STORE
