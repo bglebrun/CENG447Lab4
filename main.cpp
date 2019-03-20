@@ -1,16 +1,24 @@
 #define F_CPU 16000000
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
+
+#define USART_BAUDRATE 9600
+#define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+
+ISR(USART_RX_vect){
+  char inByte;
+
+}
+
+ISR(USART_TX_vect){
+
+}
 
 int main() {
-  DDRB = 0xFF;
-
-  while (true){
-      char i;
-      for (i = 0; i < 10; i++) {
-        _delay_ms(60);
-      }
-      PORTB ^= 0b00100000;
+  sei();                                              // set global interrupts
+  while (true) {
+    
   }
-  return 0;
+  return 1;
 }

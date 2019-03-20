@@ -5,7 +5,7 @@
 # test-connection:	calls avrdude to test connection
 
 # Name for compilation
-PROJECT		?= blink
+PROJECT		?= uartio
 
 # Objects to build
 OBJECTS		?= main.o
