@@ -1,7 +1,7 @@
 # Makefile does:
-# all (default):		builds program
-# flash:						flashes program to board
-# clean: 						cleans object/hex files
+# all (default):	builds program
+# flash:			flashes program to board
+# clean: 			cleans object/hex files
 # test-connection:	calls avrdude to test connection
 
 # Name for compilation
@@ -15,7 +15,7 @@ AVRMCU		?= atmega328p
 AVRCLOCK	?= 16000000
 
 # Avr connection deets
-PORT				?= com5
+PORT		?= com5
 PROGRAMMER	?= arduino
 
 # Avr toolchain
