@@ -1,6 +1,6 @@
-# CENG447Lab0
+# CENG447Lab4
 
-Simple flash project and toolchain check for AVR devleopment
+UART communication in C for pin read/write on atmega328p
 
 ## Getting Started
 
