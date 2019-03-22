@@ -10,6 +10,7 @@
 
 static int uart_putchar(char c, FILE* stream);
 uint8_t uart_getchar(void);
+void printMsg();
 
 char iobuff[32];
 int i = 0;
@@ -52,13 +53,13 @@ void initUART() {
 
 int main()
 {
-  initUART();
-  // set global interrupts
-  sei();
-  while (true)
-  {
-  }
-  return 1;
+    initUART();
+    // set global interrupts
+    sei();
+    while (true)
+    {
+    }
+    return 1;
 }
 
 static int uart_putchar(char c, FILE *stream) {
@@ -93,4 +94,11 @@ ISR(USART_RX_vect)
     }
 }
 
-void printMsg() {}
+void printMsg()
+{
+    fprintf(&mystdout, uiMsgs[type], pinMsgs[pin], stateMsgs[set]);
+}
+
+static int uart_putchar(char c, FILE* stream) {}
+
+uint8_t uart_getchar(void) {}
