@@ -63,22 +63,6 @@ int main()
     return 1;
 }
 
-static int uart_putchar(char c, FILE* stream)
-{
-    if (c == '\n')
-        uart_putchar('\r', stream);
-    loop_until_bit_is_set(UCSR1A, UDRE1);
-    UDR1 = c;
-    return 0;
-}
-
-uint8_t uart_getchar(void)
-{
-    while (!(UCSR1A & (1 << RXC1)))
-        ;
-    return (UDR1);
-}
-
 ISR(USART_RX_vect)
 {
     char inByte = UDR0;
@@ -108,15 +92,15 @@ static int uart_putchar(char c, FILE* stream)
 {
     if (c == '\n')
         uart_putchar('\r', stream);
-    loop_until_bit_is_set(UCSR1A, UDRE1);
-    UDR1 = c;
+    loop_until_bit_is_set(UCSR0A, UDRE0);
+    UDR0 = c;
     return 0;
 }
 
 uint8_t uart_getchar(void)
 {
-    while (!(UCSR1A & (1 << RXC1)))
+    while (!(UCSR0A & (1 << RXC0)))
     {
     }
-    return (UDR1);
+    return (UDR0);
 }
