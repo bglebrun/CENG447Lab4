@@ -98,7 +98,3 @@ void printMsg()
 {
     fprintf(&mystdout, uiMsgs[type], pinMsgs[pin], stateMsgs[set]);
 }
-
-static int uart_putchar(char c, FILE* stream) {}
-
-uint8_t uart_getchar(void) {}
