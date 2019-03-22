@@ -11,12 +11,16 @@
 char iobuff[32];
 int i = 0;
 
-int main() {
-  // UART init code
-  UBRR0H = (BAUD_PRESCALE>>8);
+void initUART() {
+  // init uart
+  UCSR0B |= 0x18;
+  UCSR0C |= 0x06;
   UBRR0L = BAUD_PRESCALE;
-  UCSR0B = (1<<RXEN0) | (1<<RXCIE0);
-  UCSR0C |= (1<<UCSZ00 | (1 << UCSZ01));
+  UBRR0H = (BAUD_PRESCALE >> 8);
+}
+
+int main() {
+  initUART(); 
   // set global interrupts
   sei();
   while (true) {
