@@ -44,7 +44,7 @@ enum SET_TYPE
 
 void initUART() {
   // init uart
-  UCSR0B |= 0x18;
+  UCSR0B |= 0x98;
   UCSR0C |= 0x06;
   UBRR0L = BAUD_PRESCALE;
   UBRR0H = (BAUD_PRESCALE >> 8);
@@ -59,6 +59,18 @@ int main()
   {
   }
   return 1;
+}
+
+static int uart_putchar(char c, FILE *stream) {
+  if (c=='\n') uart_putchar('\r', stream);
+  loop_until_bit_is_set(UCSR1A, UDRE1);
+  UDR1 = c;
+  return 0;
+}
+
+uint8_t uart_getchar(void) {
+  while(!(UCSR1A & (1<<RXC1)));
+  return(UDR1);
 }
 
 ISR(USART_RX_vect)
@@ -79,11 +91,6 @@ ISR(USART_RX_vect)
         iobuff[i++] = inByte;
         inByte = 0;
     }
-}
-
-ISR(USART_TX_vect)
-{
-    // TODO: print message indicating handled task
 }
 
 void printMsg() {}
