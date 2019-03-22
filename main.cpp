@@ -1,46 +1,85 @@
 #define F_CPU 16000000
-#include <avr/io.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
-#include <string.h>
 #include "strings.h"
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <string.h>
+#include <util/delay.h>
 
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
+static int uart_putchar(char c, FILE* stream);
+uint8_t uart_getchar(void);
+
 char iobuff[32];
 int i = 0;
+MSG_TYPE type = MSG_TYPE::MSG_NONE;
+TGT_PIN pin = TGT_PIN::PIN_EIGHT;
+SET_TYPE set = SET_TYPE::LOW;
 
-int main() {
-  // UART init code
-  UBRR0H = (BAUD_PRESCALE>>8);
-  UBRR0L = BAUD_PRESCALE;
-  UCSR0B = (1<<RXEN0) | (1<<RXCIE0);
-  UCSR0C |= (1<<UCSZ00 | (1 << UCSZ01));
-  // set global interrupts
-  sei();
-  while (true) {
-    
-  }
-  return 1;
+static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
+static FILE mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
+
+enum MSG_TYPE
+{
+    MSG_NONE = 0,
+    MSG_SET,
+    MSG_READ,
+    MSG_INV
 }
 
-ISR(USART_RX_vect){
-  char inByte = UDR0;
-  // processing goes here
-  if (inByte=='\n') {
-    i = 0;
-    // process string here
-    
-    // clear io buffer when done
-    memset(iobuff, 0, sizeof iobuff);
-  } else {
-    // continue to write to a fifo buffer
-    iobuff[i++] = inByte;
-    inByte = 0;
-  }
+enum TGT_PIN
+{
+    PIN_EIGHT,
+    PIN_NINE,
+    PIN_TEN,
+    PIN_ELEVEN,
 }
 
-ISR(USART_TX_vect){
-  // idk do we even need this?
+enum SET_TYPE
+{
+    LOW,
+    HIGH
 }
+
+int main()
+{
+    // UART init code
+    UBRR0H = (BAUD_PRESCALE >> 8);
+    UBRR0L = BAUD_PRESCALE;
+    UCSR0B = (1 << RXEN0) | (1 << RXCIE0);
+    UCSR0C |= (1 << UCSZ00 | (1 << UCSZ01));
+    // set global interrupts
+    sei();
+    while (true)
+    {
+    }
+    return 1;
+}
+
+ISR(USART_RX_vect)
+{
+    char inByte = UDR0;
+    // processing goes here
+    if (inByte == '\n')
+    {
+        i = 0;
+        // process string here
+
+        // clear io buffer when done
+        memset(iobuff, 0, sizeof iobuff);
+    }
+    else
+    {
+        // continue to write to a fifo buffer
+        iobuff[i++] = inByte;
+        inByte = 0;
+    }
+}
+
+ISR(USART_TX_vect)
+{
+    // TODO: print message indicating handled task
+}
+
+void printMsg() {}
