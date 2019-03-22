@@ -10,8 +10,9 @@
 
 static int uart_putchar(char c, FILE* stream);
 uint8_t uart_getchar(void);
+void printMsg()
 
-char iobuff[32];
+    char iobuff[32];
 int i = 0;
 MSG_TYPE type = MSG_TYPE::MSG_NONE;
 TGT_PIN pin = TGT_PIN::PIN_EIGHT;
@@ -42,23 +43,24 @@ enum SET_TYPE
     HIGH
 };
 
-void initUART() {
-  // init uart
-  UCSR0B |= 0x18;
-  UCSR0C |= 0x06;
-  UBRR0L = BAUD_PRESCALE;
-  UBRR0H = (BAUD_PRESCALE >> 8);
+void initUART()
+{
+    // init uart
+    UCSR0B |= 0x18;
+    UCSR0C |= 0x06;
+    UBRR0L = BAUD_PRESCALE;
+    UBRR0H = (BAUD_PRESCALE >> 8);
 }
 
 int main()
 {
-  initUART();
-  // set global interrupts
-  sei();
-  while (true)
-  {
-  }
-  return 1;
+    initUART();
+    // set global interrupts
+    sei();
+    while (true)
+    {
+    }
+    return 1;
 }
 
 ISR(USART_RX_vect)
@@ -81,9 +83,11 @@ ISR(USART_RX_vect)
     }
 }
 
-ISR(USART_TX_vect)
+void printMsg()
 {
-    // TODO: print message indicating handled task
+    fprintf(&mystdout, uiMsgs[type], pinMsgs[pin], stateMsgs[set]);
 }
 
-void printMsg() {}
+static int uart_putchar(char c, FILE* stream) {}
+
+uint8_t uart_getchar(void) {}
