@@ -46,7 +46,7 @@ int ReadPinDigital(enum TGT_PIN pin) {
  * 1 - Pin not set
  * 0 - Pin was set
  */
-int WritePin(enum TGT_PIN pin, enum SET_TYPE mode) {
+int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode) {
     switch(pin){
         case PIN_NINE:
             switch(mode){
