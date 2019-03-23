@@ -8,7 +8,7 @@
 PROJECT		?= uartio
 
 # Objects to build
-OBJECTS		?= main.o
+OBJECTS		?= pinops.o main.o
 
 # Microprocessor
 AVRMCU		?= atmega328p
@@ -20,7 +20,7 @@ PROGRAMMER	?= arduino
 
 # Avr toolchain
 AVRCPP		?= avr-gcc.exe
-AVROBJCPY ?= avr-objcopy.exe
+AVROBJCPY	?= avr-objcopy.exe
 AVRSIZE		?= avr-size.exe
 AVRDUDE		?= avrdude.exe
 

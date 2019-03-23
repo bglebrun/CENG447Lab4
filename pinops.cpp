@@ -23,13 +23,13 @@ void initPins() {
  * 0 - Pin not set
  * Else - Pin set
  */
-int ReadPinDigital(TGT_PIN pin) {
+int ReadPinDigital(enum TGT_PIN pin) {
     switch(pin){
         case PIN_TEN:
-            return PORTB & 0x04;
+            return PINB & 0x04;
         break;
         case PIN_EIGHT:
-            return PORTB & 0x01;
+            return PINB & 0x01;
         break;
         default:
         return -1;
@@ -46,7 +46,7 @@ int ReadPinDigital(TGT_PIN pin) {
  * 1 - Pin not set
  * 0 - Pin was set
  */
-int WritePin(TGT_PIN pin, SET_TYPE mode) {
+int WritePin(enum TGT_PIN pin, enum SET_TYPE mode) {
     switch(pin){
         case PIN_NINE:
             switch(mode){
