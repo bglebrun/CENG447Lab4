@@ -1,6 +1,5 @@
 #ifndef _STRINGS_H_
 #define _STRINGS_H_
-#include "msg_types.h"
 
 static const char* uiMsgs[] = {invalidMsg, setPin, readPin};
 static const char* stateMsgs[] = {lowMsg, highMsg};
