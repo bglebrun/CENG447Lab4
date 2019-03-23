@@ -3,15 +3,14 @@
 /* ENUM TYPES */
 enum MSG_TYPE
 {
-    MSG_NONE = 0,
+    MSG_INV = 0,
     MSG_SET,
-    MSG_READ,
-    MSG_INV
+    MSG_READ
 };
 
 enum TGT_PIN
 {
-    PIN_EIGHT,
+    PIN_EIGHT = 0,
     PIN_NINE,
     PIN_TEN,
     PIN_ELEVEN,
@@ -19,7 +18,7 @@ enum TGT_PIN
 
 enum SET_TYPE
 {
-    LOW,
+    LOW = 0,
     HIGH
 };
 #endif

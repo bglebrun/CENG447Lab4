@@ -1,40 +1,43 @@
 #define F_CPU 16000000
-#include "strings.h"
-#include "msg_types.h"
-#include "pinops.h"
-#include <stdio.h>
-#include <avr/interrupt.h>
-#include <avr/io.h>
-#include <string.h>
-#include <util/delay.h>
-
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+#include "msg_types.h"
+#include "pinops.h"
+#include "strings.h"
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <stdio.h>
+#include <string.h>
+#include <util/delay.h>
 
 /* FUNCTION PROTOTYPES */
 static int uart_putchar(char c, FILE* stream);
 uint8_t uart_getchar(void);
-
 void initUART();
+void printMsg();
 
 /* GLOBAL CONST */
 char iobuff[32];
 int i = 0;
-MSG_TYPE type = MSG_TYPE::MSG_NONE;
-TGT_PIN pin = TGT_PIN::PIN_EIGHT;
-SET_TYPE set = SET_TYPE::LOW;
+enum MSG_TYPE type = MSG_INV;
+enum TGT_PIN pin = PIN_EIGHT;
+enum SET_TYPE set = LOW;
 
 static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
 static FILE mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
 
-int main()
+int main(void)
 {
     initUART();
     initPins();
     // set global interrupts
     sei();
-    while (true)
+    while (1)
     {
+        printMsg();
+        while (1)
+        {
+        }
     }
     return 1;
 }
@@ -70,7 +73,15 @@ void initUART()
 
 void printMsg()
 {
-    fprintf(&mystdout, uiMsgs[type], pinMsgs[pin], stateMsgs[set]);
+    const char* str = uiMsgs[type];
+    if (type == MSG_INV)
+    {
+        fprintf(&mystdout, str);
+    }
+    else
+    {
+        fprintf(&mystdout, str, pinMsgs[pin], stateMsgs[set]);
+    }
 }
 
 static int uart_putchar(char c, FILE* stream)
