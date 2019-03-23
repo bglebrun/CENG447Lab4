@@ -25,8 +25,8 @@ AVRSIZE		?= avr-size.exe
 AVRDUDE		?= avrdude.exe
 
 # build flags
-AVRCPPFLAGS ?= -mmcu=$(AVRMCU) -Wall -DF_CPU=$(AVRCLOCK) -I. -I"C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\toolchain\\avr8\\avr8-gnu-toolchain\\avr\\include" -Os
-AVRLDFLAGS	?= -mmcu=$(AVRMCU) -I"C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\toolchain\\avr8\\avr8-gnu-toolchain\\avr\\include"
+AVRCPPFLAGS ?= -mmcu=$(AVRMCU) -Wall -DF_CPU=$(AVRCLOCK) -I. -Os
+AVRLDFLAGS	?= -mmcu=$(AVRMCU)
 AVRDUDEOPT	?= -c $(PROGRAMMER) -p $(AVRMCU) -P $(PORT)
 
 all: $(PROJECT).hex
@@ -38,7 +38,7 @@ $(PROJECT).elf: $(OBJECTS)
 	$(AVRCPP) $(AVRLDFLAGS) -o $@ $^
 	$(AVRSIZE) -C --mcu=$(AVRMCU) $@
 
-%.o: %.cpp
+%.o: %.c
 	$(AVRCPP) $(AVRCPPFLAGS) -c $< -o $@
 
 %.o: %.S
