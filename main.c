@@ -1,7 +1,6 @@
 #define F_CPU 16000000
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
-#define mmcu atmega328p
 #include "msg_types.h"
 #include "pinops.h"
 #include "strings.h"
@@ -43,11 +42,19 @@ int main(void)
     return 1;
 }
 
+enum MSG_TYPE getMessageType(char iobuff[]) {
+    if(!memcmp("set", iobuff, 3) || !memcmp("SET", iobuff, 3)) {
+        return MSG_SET; 
+    } else if(!memcmp("read", iobuff, 4) || !memcmp("READ", iobuff, 3)){
+        return MSG_READ;
+    } else return MSG_INV;
+}
+
 ISR(USART_RX_vect)
 {
     char inByte = UDR0;
     // processing goes here
-    if (inByte == '\n')
+    if (inByte == "\n")
     {
         i = 0;
         // process string here
