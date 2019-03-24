@@ -18,10 +18,12 @@ void printMsg();
 
 /* GLOBAL CONST */
 char iobuff[32];
-int i = 0;
+int i = 0; // tracks end of iobuff
+int j = 0; // tracks end of consumed input
 enum MSG_TYPE type = MSG_INV;
 enum TGT_PIN pin = PIN_EIGHT;
 enum SET_TYPE set = LOW;
+enum INVALID_TYPE inv = INVALID_COMMAND;
 
 static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
 static FILE mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
@@ -30,6 +32,8 @@ int main(void)
 {
     initUART();
     initPins();
+    // stdout = &mystdout;
+    // stdin = &mystdin;
     // set global interrupts
     sei();
     while (1)
@@ -42,60 +46,134 @@ int main(void)
     return 1;
 }
 
-enum MSG_TYPE getMessageType(char iobuff[]) {
-    if(!memcmp("set", iobuff, 3) || !memcmp("SET", iobuff, 3)) {
-        return MSG_SET; 
-    } else if(!memcmp("read", iobuff, 4) || !memcmp("READ", iobuff, 3)){
-        return MSG_READ;
-    } else return MSG_INV;
+void setMessageType(char iobuff[])
+{
+    if (!memcmp("set", iobuff, 3) || !memcmp("SET", iobuff, 3))
+    {
+        type = MSG_SET;
+        j = 5;
+    }
+    else if (!memcmp("read", iobuff, 4) || !memcmp("READ", iobuff, 4))
+    {
+        type = MSG_READ;
+        j = 6;
+    }
+    else
+    {
+        inv = INVALID_COMMAND;
+        type = MSG_INV;
+    }
 }
 
-enum TGT_PIN getPinNumber(char iobuff[], enum MSG_TYPE mode) {
+void setPinNumber(char iobuff[], enum MSG_TYPE mode)
+{
     char num[3];
-    switch(mode) {
-        case MSG_READ:
-            memcpy(num, iobuff[6], 3);
-            if(!memcmp('8', num, 1)) return PIN_EIGHT;
-            else if (!memcmp("10", num, 2)) return PIN_TEN;
+    inv = INVALID_PIN;
+    switch (mode)
+    {
+    case MSG_READ:
+        memcpy(num, &iobuff[6], 3);
+        if (!memcmp("8", num, 1))
+        {
+            pin = PIN_EIGHT;
+            inv = INVALID_NONE;
+        }
+        else if (!memcmp("10", num, 2))
+        {
+            pin = PIN_TEN;
+            inv = INVALID_NONE;
+        }
         break;
-        case MSG_SET:
-            memcpy(num, iobuff[5], 3);
-            if(!memcmp('9', num, 1)) return PIN_NINE;
-            else if (!memcmp("10", num, 2)) return PIN_TEN;
+    case MSG_SET:
+        memcpy(num, &iobuff[5], 3);
+        if (!memcmp("9", num, 1))
+        {
+            pin = PIN_NINE;
+            inv = INVALID_NONE;
+        }
+        else if (!memcmp("10", num, 2))
+        {
+            pin = PIN_TEN;
+            inv = INVALID_NONE;
+        }
+        break;
+    case MSG_INV:
         break;
     }
-    return 0;
+
+    if (inv == INVALID_PIN)
+    {
+        type = MSG_INV;
+    }
+
+    j += 3;
 }
 
-void processMessage(char iobuff[]) {
-    type = getMessageType(iobuff);
-    pin = getPinNumber(iobuff, type);
-    if (type == MSG_SET) {
+void setPinMode(char iobuff[])
+{
+    char tmp[5];
+    memcpy(tmp, &iobuff[j], 5);
 
+    if (!memcmp("high", tmp, 4) || !memcmp("HIGH", tmp, 4))
+    {
+        set = HIGH;
     }
+    else if (!memcmp("low", tmp, 3) || !memcmp("LOW", tmp, 3))
+    {
+        set = LOW;
+    }
+    else
+    {
+        /*ERROR*/
+        type = MSG_INV;
+        inv = INVALID_STATE;
+    }
+}
+
+void processMessage(char iobuff[])
+{
+    // these functions change global state
+    // based on the input buffer
+    setMessageType(iobuff);
+    setPinNumber(iobuff, type);
     int pinStatus = 0;
-    switch (type) {
-        case MSG_READ:
-            
-        break; 
-        case MSG_SET:
-
+    switch (type)
+    {
+    case MSG_READ:
+        // TODO: this is clunky and error prone,
+        // there should be another enum/variable to store this
+        // status
+        pinStatus = ReadPinDigital(pin);
+        if (pinStatus == 0)
+        {
+            set = LOW;
+        }
+        else if (pinStatus == 1)
+        {
+            set = HIGH;
+        }
         break;
-        case MSG_INV:
-
+    case MSG_SET:
+        setPinMode(iobuff);
+        if (type != MSG_INV)
+            WritePinDigital(pin, set);
+        break;
+    case MSG_INV:
         break;
     }
+    printMsg();
 }
 
 ISR(USART_RX_vect)
 {
     char inByte = UDR0;
+
     // processing goes here
-    if (inByte == '\n')
+    if (inByte == '\r')
     {
         i = 0;
         // process string here
-
+        processMessage(iobuff);
         // clear io buffer when done
         memset(iobuff, 0, sizeof iobuff);
     }
@@ -121,7 +199,7 @@ void printMsg()
     const char* str = uiMsgs[type];
     if (type == MSG_INV)
     {
-        fprintf(&mystdout, str);
+        fprintf(&mystdout, str, errorMsgs[inv]);
     }
     else
     {

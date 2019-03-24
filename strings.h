@@ -3,20 +3,27 @@
 
 // ui msgs
 static const char invalidMsg[] =
-    "INVALID PIN, Command structure: ' READ/ (WRITE) PIN_NUM (HIGH|LOW)'";
-static const char setPin[] = "Pin %s set %s";
-static const char readPin[] = "Pin %s reads %s";
+    "%s, Command structure: ' READ/ (WRITE) PIN_NUM (HIGH|LOW)'\r\n";
+static const char setPin[] = "Pin %s set %s\r\n";
+static const char readPin[] = "Pin %s reads %s\r\n";
 // state msgs
 static const char lowMsg[] = "LOW";
 static const char highMsg[] = "HIGH";
 // pin msgs
-static const char pin_eight[] = "eight";
-static const char pin_nine[] = "nine";
-static const char pin_ten[] = "ten";
-static const char pin_eleven[] = "eleven";
+static const char pinEight[] = "eight";
+static const char pinNine[] = "nine";
+static const char pinTen[] = "ten";
+static const char pinEleven[] = "eleven";
+// invalid types
+static const char invalidState[] = "INVALID STATE";
+static const char invalidPin[] = "INVALID PIN";
+static const char invalidCommand[] = "INVALID COMMAND";
+static const char invalidNone[] = "";
 // msg lists
 static const char* uiMsgs[] = {invalidMsg, setPin, readPin};
 static const char* stateMsgs[] = {lowMsg, highMsg};
-static const char* pinMsgs[] = {pin_eight, pin_nine, pin_ten, pin_eleven};
+static const char* pinMsgs[] = {pinEight, pinNine, pinTen, pinEleven};
+static const char* errorMsgs[] = {invalidState, invalidPin, invalidCommand,
+                                  invalidNone}
 
 #endif

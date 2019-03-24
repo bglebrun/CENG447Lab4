@@ -15,7 +15,7 @@ AVRMCU		?= atmega328p
 AVRCLOCK	?= 16000000
 
 # Avr connection deets
-PORT		?= com5
+PORT		?= com3
 PROGRAMMER	?= arduino
 
 # Avr toolchain
@@ -53,4 +53,6 @@ flash:
 	-@		 $(AVRDUDE) $(AVRDUDEOPT) -b 115200 -U flash:w:$(PROJECT).hex:i
 
 clean:
-	rm *.o *.hex *.elf
+	rm *.o
+	rm *.hex
+	rm *.elf

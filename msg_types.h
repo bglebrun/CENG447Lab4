@@ -13,12 +13,20 @@ enum TGT_PIN
     PIN_EIGHT = 0,
     PIN_NINE,
     PIN_TEN,
-    PIN_ELEVEN,
+    PIN_ELEVEN
 };
 
 enum SET_TYPE
 {
     LOW = 0,
     HIGH
+};
+
+enum INVALID_TYPE
+{
+    INVALID_STATE = 0,
+    INVALID_PIN,
+    INVALID_COMMAND,
+    INVALID_NONE
 };
 #endif
