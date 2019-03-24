@@ -50,11 +50,48 @@ enum MSG_TYPE getMessageType(char iobuff[]) {
     } else return MSG_INV;
 }
 
+enum TGT_PIN getPinNumber(char iobuff[], enum MSG_TYPE mode) {
+    char num[3];
+    switch(mode) {
+        case MSG_READ:
+            memcpy(num, iobuff[6], 3);
+            if(!memcmp('8', num, 1)) return PIN_EIGHT;
+            else if (!memcmp("10", num, 2)) return PIN_TEN;
+        break;
+        case MSG_SET:
+            memcpy(num, iobuff[5], 3);
+            if(!memcmp('9', num, 1)) return PIN_NINE;
+            else if (!memcmp("10", num, 2)) return PIN_TEN;
+        break;
+    }
+    return 0;
+}
+
+void processMessage(char iobuff[]) {
+    type = getMessageType(iobuff);
+    pin = getPinNumber(iobuff, type);
+    if (type == MSG_SET) {
+
+    }
+    int pinStatus = 0;
+    switch (type) {
+        case MSG_READ:
+            
+        break; 
+        case MSG_SET:
+
+        break;
+        case MSG_INV:
+
+        break;
+    }
+}
+
 ISR(USART_RX_vect)
 {
     char inByte = UDR0;
     // processing goes here
-    if (inByte == "\n")
+    if (inByte == '\n')
     {
         i = 0;
         // process string here
