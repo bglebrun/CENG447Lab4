@@ -20,7 +20,8 @@ enum TGT_PIN
 enum SET_TYPE
 {
     LOW = 0,
-    HIGH
+    HIGH,
+    NONE
 };
 
 enum INVALID_TYPE

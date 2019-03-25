@@ -149,6 +149,10 @@ void processMessage(char iobuff[])
         {
             set = HIGH;
         }
+        else
+        {
+            set = NONE;
+        }
         break;
     case MSG_SET:
         setPinMode(setbuff);
