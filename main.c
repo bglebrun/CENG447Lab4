@@ -40,13 +40,13 @@ int main(void)
     return 1;
 }
 
-void setMessageType(char iobuff[])
+void setMessageType(char* str)
 {
-    if (!memcmp("set", iobuff, 3) || !memcmp("SET", iobuff, 3))
+    if (!memcmp("write", str, 3) || !memcmp("WRITE", str, 3))
     {
         type = MSG_SET;
     }
-    else if (!memcmp("read", iobuff, 4) || !memcmp("READ", iobuff, 4))
+    else if (!memcmp("read", str, 4) || !memcmp("READ", str, 4))
     {
         type = MSG_READ;
     }
@@ -57,31 +57,31 @@ void setMessageType(char iobuff[])
     }
 }
 
-void setPinNumber(char iobuff[], enum MSG_TYPE mode)
+void setPinNumber(char* str, enum MSG_TYPE mode)
 {
     inv = INVALID_PIN;
     pin = PIN_NONE;
     switch (mode)
     {
     case MSG_SET:
-        if (!memcmp("8", iobuff, 1))
+        if (!memcmp("8", str, 1))
         {
             pin = PIN_EIGHT;
             inv = INVALID_NONE;
         }
-        else if (!memcmp("10", iobuff, 2))
+        else if (!memcmp("10", str, 2))
         {
             pin = PIN_TEN;
             inv = INVALID_NONE;
         }
         break;
     case MSG_READ:
-        if (!memcmp("9", iobuff, 1))
+        if (!memcmp("9", str, 1))
         {
             pin = PIN_NINE;
             inv = INVALID_NONE;
         }
-        else if (!memcmp("11", iobuff, 2))
+        else if (!memcmp("11", str, 2))
         {
             pin = PIN_ELEVEN;
             inv = INVALID_NONE;
@@ -97,13 +97,13 @@ void setPinNumber(char iobuff[], enum MSG_TYPE mode)
     }
 }
 
-void setPinMode(char iobuff[])
+void setPinMode(char* str)
 {
-    if (!memcmp("high", iobuff, 4) || !memcmp("HIGH", iobuff, 4))
+    if (!memcmp("high", str, 4) || !memcmp("HIGH", str, 4))
     {
         set = HIGH;
     }
-    else if (!memcmp("low", iobuff, 3) || !memcmp("LOW", iobuff, 3))
+    else if (!memcmp("low", str, 3) || !memcmp("LOW", str, 3))
     {
         set = LOW;
     }
@@ -120,44 +120,48 @@ void processMessage(char iobuff[])
     combuff = strtok(iobuff, " ");
     pinbuff = strtok(NULL, " ");
     setbuff = strtok(NULL, " ");
-    if (combuff == NULL) {
+    if (combuff == NULL)
+    {
         type = MSG_INV;
         inv = INVALID_COMMAND;
     }
-
-    // these functions change global state
-    // based on the input buffer
-    setMessageType(combuff);
-    setPinNumber(pinbuff, type);
-    int pinStatus = 0;
-    switch (type)
+    else
     {
-    case MSG_READ:
-        // TODO: this is clunky and error prone,
-        // there should be another enum/variable to store this
-        // status
-        pinStatus = ReadPinDigital(pin);
-        if (pinStatus == 0)
+        // these functions change global state
+        // based on the input buffer
+        setMessageType(combuff);
+        setPinNumber(pinbuff, type);
+        int pinStatus = 0;
+        switch (type)
         {
-            set = LOW;
+        case MSG_READ:
+            // TODO: this is clunky and error prone,
+            // there should be another enum/variable to store this
+            // status
+            pinStatus = ReadPinDigital(pin);
+            if (pinStatus == 0)
+            {
+                set = LOW;
+            }
+            else if (pinStatus == 1)
+            {
+                set = HIGH;
+            }
+            else
+            {
+                set = NONE;
+            }
+            break;
+        case MSG_SET:
+            setPinMode(setbuff);
+            if (type != MSG_INV)
+                WritePinDigital(pin, set);
+            break;
+        case MSG_INV:
+            break;
         }
-        else if (pinStatus == 1)
-        {
-            set = HIGH;
-        }
-        else
-        {
-            set = NONE;
-        }
-        break;
-    case MSG_SET:
-        setPinMode(setbuff);
-        if (type != MSG_INV)
-            WritePinDigital(pin, set);
-        break;
-    case MSG_INV:
-        break;
     }
+
     printMsg();
 }
 
