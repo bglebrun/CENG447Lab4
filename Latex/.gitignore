@@ -248,3 +248,6 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
+
+# prevent pdf in repo
+*.pdf

@@ -61,7 +61,7 @@ We began by creating an input interrupt handler, a buffer for input, and a strea
 
 Physically, we use push-buttons connected to the breadboard to handle reading high or low values from pins 9 and 11. If the button is pressed, the pins read 'high' as they are connected to the 5-volt source on the board, otherwise they read low. We have attached LEDs to the buttons to provide a visible indication of when the pins should read 'high' or 'low'.
 
-On reset, the output pins start low, and the input pins are pulled low by the internal pull-down resistors. This means that the LEDs begin off and the read pins are 'low' before any user input is performed. When pin 8 is set high by the 'set 8 high' command, our blue LED will turn on. Similarly, when pin 10 is set high, the red LED will turn on. If either is set low by the 'set (8|10) low" command, the respective LED will turn off. The read pins (9 and 11) read low until their respective buttons are pushed. When the button for pin 9 is pressed, the yellow LED will turn on, and a read from the pin will report 'high'. Similarly, when the button for pin 11 is pressed, the green LED will turn on, and a read on pin 11 will report 'high'.
+On reset, the output pins start low, and the input pins are pulled low by the internal pull-down resistors. This means that the LEDs begin off and the read pins are 'low' before any user input is performed. When pin 8 is set high by the 'set 8 high' command, our blue LED will turn on. Similarly, when pin 10 is set high, the red LED will turn on. If either is set low by the 'set (8|10) low' command, the respective LED will turn off. The read pins (9 and 11) read low until their respective buttons are pushed. When the button for pin 9 is pressed, the yellow LED will turn on, and a read from the pin will report 'high'. Similarly, when the button for pin 11 is pressed, the green LED will turn on, and a read on pin 11 will report 'high'.
 
 
 \section*{Equipment}
@@ -79,8 +79,6 @@ This lab required the following equipment:
 \end{itemize}
 
 \subsection*{Configuration}
-% TODO describe in words the circuit
-
 For the circuit configuration we have a simple line from pins 8 and 10 from the Arduino unit to the LEDs behind two
 resistors to ground. For our voltage inputs we have a simple normally open push button switch. For each input, we have
 a 5 volt rail entering into one side of the push button, the other side has a hardware indication LED connected to
@@ -98,36 +96,38 @@ volts of potential on the rail and appropriately light the LED.
 \section*{Implementation}
 
 \subsection*{int main(void)}
-%TODO
+Performs startup logic by calling \textit{initUART} and \textit{initPins}, then loops forever using a 'while(1)' empty loop. After startup, program is entirely interrupt driven. 
+
+\subsection*{ISR(USART\_RX\_vect) (interrupt)}
+Every character of user input is handled by this function, which inserts the character into the \textit{iobuff} character array. The program expects input to be terminated with a carriage-return ('\verb+\r+'), at which point the \textit{processMessage} will handle the input, and the buffer will be cleared.
+\subsection*{processMessage(char iobuff[])}
+This function tokenizes the input and calls a series of state modifying functions that will each perform error checking. If the input passes validation checks, the command is executed, and the appropriate operations are performed.
 \subsection*{void setMessageType(char iobuff[])}
-%TODO
-\subsection*{void setPinNumber(char iobuff[], enum MSG_TYPE mode)}
+
+\subsection*{void setPinNumber(char iobuff[], enum MSG\_TYPE mode)}
 %TODO
 \subsection*{setPinMode(char iobuff[])}
 %TODO
-\subsection*{processMessage(char iobuff[])}
-%TODO
-\subsection*{ISR(USART_RX_vect) (interrupt)}
-%TODO
+
 \subsection*{void initUART()}
 %TODO
-\subsection*{void printMsg}
+\subsection*{void printMsg()}
 %TODO
-\subsection*{static int uart_putchar(char c, FILE* stream)}
+\subsection*{static int uart\_putchar(char c, FILE* stream)}
 %TODO
-\subsection*{enum MSG_TYPE}
+\subsection*{enum MSG\_TYPE}
 %TODO
-\subsection*{enum TGT_PIN}
+\subsection*{enum TGT\_PIN}
 %TODO
-\subsection*{enum SET_TYPE}
+\subsection*{enum SET\_TYPE}
 %TODO
-\subsection*{enum INVALID_TYPE}
+\subsection*{enum INVALID\_TYPE}
 %TODO
 \subsection*{void initPins()}
 %TODO
-\subsection*{int ReadPinDigital(enum TGT_PIN pin}
+\subsection*{int ReadPinDigital(enum TGT\_PIN pin}
 %TODO
-\subsection*{int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode}
+\subsection*{int WritePinDigital(enum TGT\_PIN pin, enum SET\_TYPE mode}
 %TODO
 \subsection*{strings.h}
 %TODO
