@@ -13,7 +13,8 @@ enum TGT_PIN
     PIN_EIGHT = 0,
     PIN_NINE,
     PIN_TEN,
-    PIN_ELEVEN
+    PIN_ELEVEN,
+    PIN_NONE
 };
 
 enum SET_TYPE

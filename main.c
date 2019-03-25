@@ -23,7 +23,7 @@ char* pinbuff;
 char* setbuff;
 int i = 0; // tracks end of iobuff
 enum MSG_TYPE type = MSG_INV;
-enum TGT_PIN pin = PIN_EIGHT;
+enum TGT_PIN pin = PIN_NONE;
 enum SET_TYPE set = LOW;
 enum INVALID_TYPE inv = INVALID_COMMAND;
 
@@ -68,34 +68,31 @@ void setMessageType(char iobuff[])
 void setPinNumber(char iobuff[], enum MSG_TYPE mode)
 {
     inv = INVALID_PIN;
+    pin = PIN_NONE;
     switch (mode)
     {
-    case MSG_READ:
+    case MSG_SET:
         if (!memcmp("8", iobuff, 1))
         {
             pin = PIN_EIGHT;
             inv = INVALID_NONE;
-            fprintf(&mystdout, "did read pin 8\r\n");
         }
         else if (!memcmp("10", iobuff, 2))
         {
             pin = PIN_TEN;
             inv = INVALID_NONE;
-            fprintf(&mystdout, "did read pin 10\r\n");
         }
         break;
-    case MSG_SET:
+    case MSG_READ:
         if (!memcmp("9", iobuff, 1))
         {
             pin = PIN_NINE;
             inv = INVALID_NONE;
-            fprintf(&mystdout, "did write pin 9\r\n");
         }
-        else if (!memcmp("10", iobuff, 2))
+        else if (!memcmp("11", iobuff, 2))
         {
-            pin = PIN_TEN;
+            pin = PIN_ELEVEN;
             inv = INVALID_NONE;
-            fprintf(&mystdout, "did write pin 11\r\n");
         }
         break;
     case MSG_INV:
