@@ -12,7 +12,6 @@
 
 /* FUNCTION PROTOTYPES */
 static int uart_putchar(char c, FILE* stream);
-uint8_t uart_getchar(void);
 void initUART();
 void printMsg();
 
@@ -24,26 +23,19 @@ char* setbuff;
 int i = 0; // tracks end of iobuff
 enum MSG_TYPE type = MSG_INV;
 enum TGT_PIN pin = PIN_NONE;
-enum SET_TYPE set = LOW;
-enum INVALID_TYPE inv = INVALID_COMMAND;
+enum SET_TYPE set = NONE;
+enum INVALID_TYPE inv = INVALID_NONE;
 
 static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
-static FILE mystdin = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
 
 int main(void)
 {
     initUART();
     initPins();
-    // stdout = &mystdout;
-    // stdin = &mystdin;
     // set global interrupts
     sei();
     while (1)
     {
-        printMsg();
-        while (1)
-        {
-        }
     }
     return 1;
 }
@@ -219,12 +211,4 @@ static int uart_putchar(char c, FILE* stream)
     loop_until_bit_is_set(UCSR0A, UDRE0);
     UDR0 = c;
     return 0;
-}
-
-uint8_t uart_getchar(void)
-{
-    while (!(UCSR0A & (1 << RXC0)))
-    {
-    }
-    return (UDR0);
 }
