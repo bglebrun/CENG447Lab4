@@ -24,6 +24,6 @@ static const char* uiMsgs[] = {invalidMsg, setPin, readPin};
 static const char* stateMsgs[] = {lowMsg, highMsg};
 static const char* pinMsgs[] = {pinEight, pinNine, pinTen, pinEleven};
 static const char* errorMsgs[] = {invalidState, invalidPin, invalidCommand,
-                                  invalidNone}
+                                  invalidNone};
 
 #endif

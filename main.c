@@ -1,14 +1,14 @@
 #define F_CPU 16000000
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+#include "avr/interrupt.h"
+#include "avr/io.h"
 #include "msg_types.h"
 #include "pinops.h"
+#include "stdio.h"
+#include "string.h"
 #include "strings.h"
-#include <avr/interrupt.h>
-#include <avr/io.h>
-#include <stdio.h>
-#include <string.h>
-#include <util/delay.h>
+#include "util/delay.h"
 
 /* FUNCTION PROTOTYPES */
 static int uart_putchar(char c, FILE* stream);

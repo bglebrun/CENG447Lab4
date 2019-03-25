@@ -25,8 +25,8 @@ AVRSIZE		?= avr-size.exe
 AVRDUDE		?= avrdude.exe
 
 # build flags
-AVRCPPFLAGS ?= -mmcu=$(AVRMCU) -Wall -DF_CPU=$(AVRCLOCK) -I. -Os
-AVRLDFLAGS	?= -mmcu=$(AVRMCU)
+AVRCPPFLAGS ?= -mmcu=$(AVRMCU) -std=gnu99 -Wall -DF_CPU=$(AVRCLOCK) -I. -Os
+AVRLDFLAGS	?= -mmcu=$(AVRMCU) -std=gnu99
 AVRDUDEOPT	?= -c $(PROGRAMMER) -p $(AVRMCU) -P $(PORT)
 
 all: $(PROJECT).hex
