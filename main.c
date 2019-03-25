@@ -128,6 +128,10 @@ void processMessage(char iobuff[])
     combuff = strtok(iobuff, " ");
     pinbuff = strtok(NULL, " ");
     setbuff = strtok(NULL, " ");
+    if (combuff == NULL) {
+        type = MSG_INV;
+        inv = INVALID_COMMAND;
+    }
 
     // these functions change global state
     // based on the input buffer

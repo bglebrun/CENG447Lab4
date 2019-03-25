@@ -10,6 +10,7 @@
 void initPins()
 {
     DDRB = 0x05;
+    PORTB = 0x00;
     return;
 }
 
@@ -32,10 +33,10 @@ int ReadPinDigital(enum TGT_PIN pin)
     switch (pin)
     {
     case PIN_NINE:
-        return ((pinstatus & 0x02) == 0x02);
+        return ((pinstatus & 0x02)? 1 : 0);
         break;
     case PIN_ELEVEN:
-        return ((pinstatus & 0x08) == 0x08);
+        return ((pinstatus & 0x08)? 1 : 0);
         break;
     default:
         return -1;
