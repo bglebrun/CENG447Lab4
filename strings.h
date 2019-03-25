@@ -9,6 +9,7 @@ static const char readPin[] = "Pin %s reads %s\r\n";
 // state msgs
 static const char lowMsg[] = "LOW";
 static const char highMsg[] = "HIGH";
+static const char noneMsg[] = "NONE";
 // pin msgs
 static const char pinEight[] = "eight";
 static const char pinNine[] = "nine";
@@ -22,7 +23,7 @@ static const char invalidCommand[] = "INVALID COMMAND";
 static const char invalidNone[] = "";
 // msg lists
 static const char* uiMsgs[] = {invalidMsg, setPin, readPin};
-static const char* stateMsgs[] = {lowMsg, highMsg};
+static const char* stateMsgs[] = {lowMsg, highMsg, noneMsg};
 static const char* pinMsgs[] = {pinEight, pinNine, pinTen, pinEleven, pinNone};
 static const char* errorMsgs[] = {invalidState, invalidPin, invalidCommand,
                                   invalidNone};
