@@ -18,8 +18,10 @@ void printMsg();
 
 /* GLOBAL CONST */
 char iobuff[32];
+char* combuff;
+char* pinbuff;
+char* setbuff;
 int i = 0; // tracks end of iobuff
-int j = 0; // tracks end of consumed input
 enum MSG_TYPE type = MSG_INV;
 enum TGT_PIN pin = PIN_EIGHT;
 enum SET_TYPE set = LOW;
@@ -51,12 +53,10 @@ void setMessageType(char iobuff[])
     if (!memcmp("set", iobuff, 3) || !memcmp("SET", iobuff, 3))
     {
         type = MSG_SET;
-        j = 5;
     }
     else if (!memcmp("read", iobuff, 4) || !memcmp("READ", iobuff, 4))
     {
         type = MSG_READ;
-        j = 6;
     }
     else
     {
@@ -67,34 +67,35 @@ void setMessageType(char iobuff[])
 
 void setPinNumber(char iobuff[], enum MSG_TYPE mode)
 {
-    char num[3];
     inv = INVALID_PIN;
     switch (mode)
     {
     case MSG_READ:
-        memcpy(num, &iobuff[6], 3);
-        if (!memcmp("8", num, 1))
+        if (!memcmp("8", iobuff, 1))
         {
             pin = PIN_EIGHT;
             inv = INVALID_NONE;
+            fprintf(&mystdout, "did read pin 8\r\n");
         }
-        else if (!memcmp("10", num, 2))
+        else if (!memcmp("10", iobuff, 2))
         {
             pin = PIN_TEN;
             inv = INVALID_NONE;
+            fprintf(&mystdout, "did read pin 10\r\n");
         }
         break;
     case MSG_SET:
-        memcpy(num, &iobuff[5], 3);
-        if (!memcmp("9", num, 1))
+        if (!memcmp("9", iobuff, 1))
         {
             pin = PIN_NINE;
             inv = INVALID_NONE;
+            fprintf(&mystdout, "did write pin 9\r\n");
         }
-        else if (!memcmp("10", num, 2))
+        else if (!memcmp("10", iobuff, 2))
         {
             pin = PIN_TEN;
             inv = INVALID_NONE;
+            fprintf(&mystdout, "did write pin 11\r\n");
         }
         break;
     case MSG_INV:
@@ -105,20 +106,15 @@ void setPinNumber(char iobuff[], enum MSG_TYPE mode)
     {
         type = MSG_INV;
     }
-
-    j += 3;
 }
 
 void setPinMode(char iobuff[])
 {
-    char tmp[5];
-    memcpy(tmp, &iobuff[j], 5);
-
-    if (!memcmp("high", tmp, 4) || !memcmp("HIGH", tmp, 4))
+    if (!memcmp("high", iobuff, 4) || !memcmp("HIGH", iobuff, 4))
     {
         set = HIGH;
     }
-    else if (!memcmp("low", tmp, 3) || !memcmp("LOW", tmp, 3))
+    else if (!memcmp("low", iobuff, 3) || !memcmp("LOW", iobuff, 3))
     {
         set = LOW;
     }
@@ -132,10 +128,14 @@ void setPinMode(char iobuff[])
 
 void processMessage(char iobuff[])
 {
+    combuff = strtok(iobuff, " ");
+    pinbuff = strtok(NULL, " ");
+    setbuff = strtok(NULL, " ");
+
     // these functions change global state
     // based on the input buffer
-    setMessageType(iobuff);
-    setPinNumber(iobuff, type);
+    setMessageType(combuff);
+    setPinNumber(pinbuff, type);
     int pinStatus = 0;
     switch (type)
     {
@@ -154,7 +154,7 @@ void processMessage(char iobuff[])
         }
         break;
     case MSG_SET:
-        setPinMode(iobuff);
+        setPinMode(setbuff);
         if (type != MSG_INV)
             WritePinDigital(pin, set);
         break;
