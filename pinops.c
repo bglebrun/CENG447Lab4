@@ -19,6 +19,8 @@ void initPins()
  * for invalid pin, otherwise non zero
  * numbers indicate pin is set
  *
+ * Pins 9 and 11 are inputs
+ * 
  * RETURNS:
  * -1 - Invalid pin
  * 0 - Pin not set
@@ -28,11 +30,11 @@ int ReadPinDigital(enum TGT_PIN pin)
 {
     switch (pin)
     {
-    case PIN_TEN:
-        return PINB & PORTB2;
+    case PIN_NINE:
+        return PINB & PORTB1;
         break;
-    case PIN_EIGHT:
-        return PINB & PORTB0;
+    case PIN_ELEVEN:
+        return PINB & PORTB3;
         break;
     default:
         return -1;
@@ -44,6 +46,8 @@ int ReadPinDigital(enum TGT_PIN pin)
  * Sets target pin to target mode,
  * If invalid pin will return 1,
  * otherwise should return 0
+ * 
+ * Pin 8 and 10 are outputs
  *
  * RETURNS:
  * 1 - Pin not set
@@ -53,27 +57,27 @@ int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode)
 {
     switch (pin)
     {
-    case PIN_NINE:
+    case PIN_EIGHT:
         switch (mode)
         {
         case HIGH:
-            PORTB |= PORTB1;
+            PORTB |= PORTB0;
             break;
         case LOW:
-            PORTB &= !PORTB1;
+            PORTB &= ~PORTB0;
             break;
         default:
             return 1;
         }
         break;
-    case PIN_ELEVEN:
+    case PIN_TEN:
         switch (mode)
         {
         case HIGH:
-            PORTB |= PORTB3;
+            PORTB |= PORTB2;
             break;
         case LOW:
-            PORTB &= !PORTB3;
+            PORTB &= ~PORTB2;
             break;
         default:
             return 1;
