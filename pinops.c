@@ -60,7 +60,7 @@ int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode)
             PORTB |= PORTB1;
             break;
         case LOW:
-            PORTB &= 0x3D;
+            PORTB &= !PORTB1;
             break;
         default:
             return 1;
@@ -73,7 +73,7 @@ int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode)
             PORTB |= PORTB3;
             break;
         case LOW:
-            PORTB &= 0x37;
+            PORTB &= !PORTB3;
             break;
         default:
             return 1;
