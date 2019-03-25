@@ -31,10 +31,10 @@ int ReadPinDigital(enum TGT_PIN pin)
     switch (pin)
     {
     case PIN_NINE:
-        return PINB & PORTB1;
+        return PINB & 0x02;
         break;
     case PIN_ELEVEN:
-        return PINB & PORTB3;
+        return PINB & 0x08;
         break;
     default:
         return -1;
@@ -61,10 +61,10 @@ int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode)
         switch (mode)
         {
         case HIGH:
-            PORTB |= PORTB0;
+            PORTB |= 0x01;
             break;
         case LOW:
-            PORTB &= ~PORTB0;
+            PORTB &= ~0x01;
             break;
         default:
             return 1;
@@ -74,10 +74,10 @@ int WritePinDigital(enum TGT_PIN pin, enum SET_TYPE mode)
         switch (mode)
         {
         case HIGH:
-            PORTB |= PORTB2;
+            PORTB |= 0x04;
             break;
         case LOW:
-            PORTB &= ~PORTB2;
+            PORTB &= ~0x04;
             break;
         default:
             return 1;
