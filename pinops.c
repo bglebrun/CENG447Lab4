@@ -31,10 +31,10 @@ int ReadPinDigital(enum TGT_PIN pin)
     switch (pin)
     {
     case PIN_NINE:
-        return PINB & 0x02;
+        return (PINB & 0x02? 1 : 0);
         break;
     case PIN_ELEVEN:
-        return PINB & 0x08;
+        return (PINB & 0x08? 1 : 0);
         break;
     default:
         return -1;
