@@ -81,6 +81,12 @@ This lab required the following equipment:
 \subsection*{Configuration}
 % TODO describe in words the circuit
 
+For the circuit configuration we have a simple line from pins 8 and 10 from the Arduino unit to the LEDs behind two
+resistors to ground. For our voltage inputs we have a simple normally open push button switch. For each input, we have
+a 5 volt rail entering into one side of the push button, the other side has a hardware indication LED connected to
+ground with a pulldown resistor and our line to input on the arduino. When the button is pressed, it should put 5
+volts of potential on the rail and appropriately light the LED.
+
 \begin{figure}[!ht]
 \begin{center}
 \includegraphics[width=\linewidth]{./configuration.jpg}
