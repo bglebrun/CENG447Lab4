@@ -37,9 +37,9 @@ int main(void)
     return 1;
 }
 
-void processMessage(char iobuff[])
+void processMessage(char* str)
 {
-    state.combuff = strtok(iobuff, " ");
+    state.combuff = strtok(str, " ");
     state.pinbuff = strtok(NULL, " ");
     state.setbuff = strtok(NULL, " ");
     if (state.combuff == NULL)
