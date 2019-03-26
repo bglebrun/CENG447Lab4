@@ -8,7 +8,7 @@
 PROJECT		?= uartio
 
 # Objects to build
-OBJECTS		?= pinops.o main.o
+OBJECTS		?= pinops.o main.o state.o strings.o atoi.o
 
 # Microprocessor
 AVRMCU		?= atmega328p

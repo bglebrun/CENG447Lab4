@@ -1,5 +1,5 @@
-#ifndef _MSG_TYPES_H_
-#define _MSG_TYPES_H_
+#ifndef _ENUMS_H_
+#define _ENUMS_H_
 /* ENUM TYPES */
 enum MSG_TYPE
 {

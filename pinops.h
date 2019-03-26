@@ -1,6 +1,6 @@
 #ifndef _PINOPS_H_
 #define _PINOPS_H_
-#include "msg_types.h"
+#include "state.h"
 #include <avr/io.h>
 void initPins();
 int ReadPinDigital(enum TGT_PIN pin);
