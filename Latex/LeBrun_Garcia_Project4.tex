@@ -143,7 +143,45 @@ We use strings.h to hold several c-strings for handling output to the terminal. 
 
 \newpage
 \section*{Responses}
+\begin{enumerate}
+    \item Checksums are often used to verify the integrity of transmitted data. What is a check-
+sum? Walk through the calculation of the modular sum checksum for the ASCII string
+”CENG447”. Now generate a longitudinal parity byte for the same string.
+ 
+    A checksum is a piece of data used to test incoming data for transmission 
+integrity. There's several ways to calculate a checksum, one example of a checksum is a 
+modular sum checksum. This simple checksum adds the digits of the message together, continuously
+performing modulus with every sum until we have a final remainder.
 
+    For our test string "CENG447", using a modular sum checksum, induvidually
+adding together each letter and modulating the result continuously by 255, our checksum comes out
+to 189.
+
+    \item Several different communication standards are used for inter-system serial communication,
+most notably RS-232 and RS-485. What are the differences between RS-232, RS-485, and the
+UART on our ATMega328Ps?
+
+    For the serial standards RS-232 and RS-485, the major difference between these two standards is
+the voltage level of the devices that use these standards. The RS-485, uses an activation voltage of
+200 mV in either the positive and negative direction, but the RS-232 uses a positive/negative voltage
+of 5V, both activate as digital 1 on the negative edge.
+
+    The RS-232 has a lower minimum impedance, but has a smaller transmission range across it's cable
+and a smaller transmission rate. The RS-485 has a superior transmission cable length and superior
+transmission rate.
+
+    \item Our ATMega328Ps have built-in pullup resistors. What is a pullup/pulldown resistor, and
+what is a risk of not using them? How does one enable the ATMega328P’s internal pullup
+resistors?
+
+    A pullup or pulldown resistor assist the signal in being able to hold either a grounded or
+reference voltage signal. Without an internal or external pullup or pulldown resistor, the pin
+generally "floats" or does not hold either signal discriminately, and could return improper
+digital readings when accessed. To enable the board's internal pullup resistor, while the pin
+is in read mode, we write a 1 to the necessary pin bit with its appropriate \textit{PORTX} 
+register, replacing \textit{X} with our port.
+
+\end{enumerate}
 
 \section*{Appendices}
 The following files are included as appendices:
