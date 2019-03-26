@@ -28,20 +28,20 @@ int main(void)
     globalState = createDefaultState();
     // set global interrupts
     sei();
-    printMsg(&mystdout, globalState);
+    printMsg(&mystdout, &globalState);
     while (1)
     {
     }
     return 1;
 }
 
-void processMessage(STATE s)
+void processMessage(STATE* s)
 {
     setBuffers(s);
-    if (s.combuff == NULL)
+    if (s->combuff == NULL)
     {
-        s.type = MSG_INV;
-        s.inv = INVALID_COMMAND;
+        s->type = MSG_INV;
+        s->inv = INVALID_COMMAND;
     }
     else
     {
@@ -49,15 +49,15 @@ void processMessage(STATE s)
         // based on the input buffer
         setMessageType(s);
         setPinNumber(s);
-        switch (s.type)
+        switch (s->type)
         {
         case MSG_READ:
-            setReadState(ReadPinDigital(s.pin), s);
+            setReadState(ReadPinDigital(s->pin), s);
             break;
         case MSG_SET:
             setPinMode(s);
-            if (s.type != MSG_INV)
-                WritePinDigital(s.pin, s.setState);
+            if (s->type != MSG_INV)
+                WritePinDigital(s->pin, s->setState);
             break;
         case MSG_INV:
         case MSG_INIT:
@@ -77,7 +77,7 @@ ISR(USART_RX_vect)
     {
         globalState.buffend = 0;
         // process string here
-        processMessage(globalState);
+        processMessage(&globalState);
         // clear io buffer when done
         memset(globalState.iobuff, 0, 32 * sizeof(char));
     }

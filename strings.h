@@ -55,6 +55,6 @@ static const char* errorMsgs[] = {invalidState, invalidPin, invalidCommand,
                                   invalidNone};
 
 // prototype for printMsg
-void printMsg(FILE* out, STATE state);
+void printMsg(FILE* out, STATE* state);
 
 #endif

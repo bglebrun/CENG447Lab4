@@ -25,10 +25,10 @@ typedef struct STATE
 STATE createDefaultState();
 
 /* State manipulation functions*/
-void setBuffers(STATE state);
-void setMessageType(STATE state);
-void setPinNumber(STATE state);
-void setPinMode(STATE state);
-void setReadState(int pinStatus, STATE state);
+void setBuffers(STATE* state);
+void setMessageType(STATE* state);
+void setPinNumber(STATE* state);
+void setPinMode(STATE* state);
+void setReadState(int pinStatus, STATE* state);
 
 #endif
