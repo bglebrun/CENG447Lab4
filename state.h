@@ -2,6 +2,7 @@
 #define _STATE_H_
 #include "atoi.h"
 #include "enums.h"
+#include "string.h"
 /* State struct, contains the global state of the program*/
 typedef struct STATE
 {
@@ -24,9 +25,10 @@ typedef struct STATE
 STATE createDefaultState();
 
 /* State manipulation functions*/
-void setMessageType(char* str, STATE state);
-void setPinNumber(char* str, STATE state);
-void setPinMode(char* str, STATE state);
+void setBuffers(STATE state);
+void setMessageType(STATE state);
+void setPinNumber(STATE state);
+void setPinMode(STATE state);
 void setReadState(int pinStatus, STATE state);
 
 #endif

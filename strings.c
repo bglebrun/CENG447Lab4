@@ -2,17 +2,24 @@
 
 void printMsg(FILE* out, STATE state)
 {
-    const char* str = uiMsgs[state.type];
     if (state.type == MSG_INV)
     {
-        fprintf(out, str, errorMsgs[state.inv]);
+        fprintf(out, uiMsgs[state.type], errorMsgs[state.inv]);
     }
     else if (state.type == MSG_SET)
     {
-        fprintf(out, str, pinMsgs[state.pin], stateMsgs[state.setState]);
+        fprintf(out, uiMsgs[state.type], pinMsgs[state.pin],
+                stateMsgs[state.setState]);
     }
-    else
+    else if (state.type == MSG_READ)
     {
-        fprintf(out, str, pinMsgs[state.pin], stateMsgs[state.readState]);
+        fprintf(out, uiMsgs[state.type], pinMsgs[state.pin],
+                stateMsgs[state.readState]);
+    }
+    else if (state.type == MSG_INIT)
+    {
+        fprintf(out, commands);
+        fprintf(out, pins);
+        fprintf(out, additionalNotes);
     }
 }

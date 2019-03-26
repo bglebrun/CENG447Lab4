@@ -5,7 +5,8 @@ enum MSG_TYPE
 {
     MSG_INV = 0,
     MSG_SET,
-    MSG_READ
+    MSG_READ,
+    MSG_INIT
 };
 
 enum TGT_PIN

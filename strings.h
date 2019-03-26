@@ -53,7 +53,6 @@ static const char* stateMsgs[] = {lowMsg, highMsg, noneMsg};
 static const char* pinMsgs[] = {pinEight, pinNine, pinTen, pinEleven, pinNone};
 static const char* errorMsgs[] = {invalidState, invalidPin, invalidCommand,
                                   invalidNone};
-static const char* initialMsg[] = {commands, pins, additionalNotes};
 
 // prototype for printMsg
 void printMsg(FILE* out, STATE state);

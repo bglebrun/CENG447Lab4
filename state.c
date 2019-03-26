@@ -3,7 +3,7 @@
 STATE createDefaultState()
 {
     STATE out;
-    out.type = MSG_INV;
+    out.type = MSG_INIT;
     out.pin = PIN_NONE;
     out.setState = NONE;
     out.readState = NONE;
@@ -12,13 +12,22 @@ STATE createDefaultState()
     return out;
 }
 
-void setMessageType(char* str, STATE state)
+void setBuffers(STATE state)
 {
-    if (!memcmp("write", str, 3) || !memcmp("WRITE", str, 3))
+    state.combuff = strtok(state.iobuff, " ");
+    state.pinbuff = strtok(NULL, " ");
+    state.setbuff = strtok(NULL, " ");
+}
+
+void setMessageType(STATE state)
+{
+    if (!memcmp("write", state.combuff, 3) ||
+        !memcmp("WRITE", state.combuff, 3))
     {
         state.type = MSG_SET;
     }
-    else if (!memcmp("read", str, 4) || !memcmp("READ", str, 4))
+    else if (!memcmp("read", state.combuff, 4) ||
+             !memcmp("READ", state.combuff, 4))
     {
         state.type = MSG_READ;
     }
@@ -29,11 +38,12 @@ void setMessageType(char* str, STATE state)
     }
 }
 
-void setPinNumber(char* str, STATE state)
+void setPinNumber(STATE state)
 {
+
     state.inv = INVALID_PIN;
     state.pin = PIN_NONE;
-    int input = atoi(str);
+    int input = atoi(state.pinbuff);
     switch (state.type)
     {
     case MSG_SET:
@@ -70,13 +80,14 @@ void setPinNumber(char* str, STATE state)
     }
 }
 
-void setPinMode(char* str, STATE state)
+void setPinMode(STATE state)
 {
-    if (!memcmp("high", str, 4) || !memcmp("HIGH", str, 4))
+    if (!memcmp("high", state.setbuff, 4) || !memcmp("HIGH", state.setbuff, 4))
     {
         state.setState = HIGH;
     }
-    else if (!memcmp("low", str, 3) || !memcmp("LOW", str, 3))
+    else if (!memcmp("low", state.setbuff, 3) ||
+             !memcmp("LOW", state.setbuff, 3))
     {
         state.setState = LOW;
     }

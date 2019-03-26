@@ -6,7 +6,6 @@
 #include "pinops.h"
 #include "state.h"
 #include "stdio.h"
-#include "string.h"
 #include "strings.h"
 #include "util/delay.h"
 
@@ -15,7 +14,7 @@ static int uart_putchar(char c, FILE* stream);
 void initUART();
 
 /* Program State */
-static STATE state;
+static STATE globalState;
 
 /* stdout stream */
 static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
@@ -25,50 +24,48 @@ int main(void)
 {
     initUART();
     initPins();
-    state = createDefaultState();
+    globalState.type = MSG_INIT;
+    globalState = createDefaultState();
     // set global interrupts
     sei();
-    fprintf(&mystdout, initialMsg[0]);
-    fprintf(&mystdout, initialMsg[1]);
-    fprintf(&mystdout, initialMsg[2]);
+    printMsg(&mystdout, globalState);
     while (1)
     {
     }
     return 1;
 }
 
-void processMessage(char* str)
+void processMessage(STATE s)
 {
-    state.combuff = strtok(str, " ");
-    state.pinbuff = strtok(NULL, " ");
-    state.setbuff = strtok(NULL, " ");
-    if (state.combuff == NULL)
+    setBuffers(s);
+    if (s.combuff == NULL)
     {
-        state.type = MSG_INV;
-        state.inv = INVALID_COMMAND;
+        s.type = MSG_INV;
+        s.inv = INVALID_COMMAND;
     }
     else
     {
         // these functions change global state
         // based on the input buffer
-        setMessageType(state.combuff, state);
-        setPinNumber(state.pinbuff, state);
-        switch (state.type)
+        setMessageType(s);
+        setPinNumber(s);
+        switch (s.type)
         {
         case MSG_READ:
-            setReadState(ReadPinDigital(state.pin), state);
+            setReadState(ReadPinDigital(s.pin), s);
             break;
         case MSG_SET:
-            setPinMode(state.setbuff, state);
-            if (state.type != MSG_INV)
-                WritePinDigital(state.pin, state.setState);
+            setPinMode(s);
+            if (s.type != MSG_INV)
+                WritePinDigital(s.pin, s.setState);
             break;
         case MSG_INV:
+        case MSG_INIT:
             break;
         }
     }
 
-    printMsg(&mystdout, state);
+    printMsg(&mystdout, s);
 }
 
 ISR(USART_RX_vect)
@@ -78,27 +75,27 @@ ISR(USART_RX_vect)
     // processing goes here
     if (inByte == '\r')
     {
-        state.buffend = 0;
+        globalState.buffend = 0;
         // process string here
-        processMessage(state.iobuff);
+        processMessage(globalState);
         // clear io buffer when done
-        memset(state.iobuff, 0, 32 * sizeof(char));
+        memset(globalState.iobuff, 0, 32 * sizeof(char));
     }
     else
     {
         // continue to write to a fifo buffer
-        state.iobuff[state.buffend++] = inByte;
+        globalState.iobuff[globalState.buffend++] = inByte;
         inByte = 0;
         // check if the buffer is at capacity
         // (shouldn't ever happen under) normal circumstances
-        if (state.buffend == 31)
+        if (globalState.buffend == 31)
         {
             // print buffer overflow error msg.
             fprintf(&mystdout, overflowMsg);
             // set index back to 0
-            state.buffend = 0;
+            globalState.buffend = 0;
             // clear the buffer
-            memset(state.iobuff, 0, 32 * sizeof(char));
+            memset(globalState.iobuff, 0, 32 * sizeof(char));
         }
     }
 }
