@@ -134,6 +134,29 @@ This function tokenizes the input and calls a series of state modifying function
 
 \section*{Discussion}
 
+    The first of many troubles, for user input we had an issue with carriage returns versus newlines, 
+how our code would determine the end of a buffer input. We initially checked only for \verb+'\n'+ inside of our
+buffer and initiated a buffer flush and process the string. The buffer was failing to flush and read properly,
+when we checked for a carriage return instead of a newline character our buffer was properly able to flag the 
+end of a user command and begin processing the string
+    
+    Pin set configuration and port directions and masks were the next issue. This was simply a lapse in judgement
+on the programmer's part in how to properly twiddle bits around in code to single out the necessary register bit.
+
+    Pulldown/Pullup internal resistor with our input ports was another fabulous discovery. We used buttons to 
+activate our pins however we discovered that their results weren't entirely deterministic. To solve this and add
+a nice feature on top we used an external puldown resistor paired with an LED to indicate when power was flowing
+through the switch as a hardware fallback indicator.
+
+    In the real world, many components use UART communication where more advanced or complicated data must be 
+comunicated. This also applies to communication between computers or other microcontrollers on a unified system.
+Because of this, we must know how to also communicate using different interfaces, such as GPIO when UART is either
+occupied or unavailable. 
+
+    In pursuit of this, we learned how to utilize processing commands with UART communication between two 
+machines in this lab. We also explored reading information from external sources by using the GPIO pins 
+on our microcontroller board.
+
 
 \newpage
 \section*{Responses}
@@ -180,7 +203,11 @@ register, replacing \textit{X} with our port.
 \section*{Appendices}
 The following files are included as appendices:
 \begin{itemize}
-\item main.c - entry file, manages initialization logic.
+\item main.c - entry file, manages initialization logic and interrupt handling
+\item pinops.h - header file for the pin operations file 
+\item pinops.c - handles pin operations
+\item strings.h - has static string constants for testing and printing
+\item msg_types.h - has enumerations for program state and output
 \end{itemize}
 \newpage
 
@@ -189,4 +216,23 @@ The following files are included as appendices:
 \lstinputlisting{../main.c}
 \end{tiny}
 \newpage
+\section*{Appendix B: pinops.h}
+\begin{tiny}
+\lstinputlisting{../pinops.h}
+\end{tiny}
+\newpage
+\section*{Appendix C: pinops.c}
+\begin{tiny}
+\lstinputlisting{../pinops.c}
+\end{tiny}
+\newpage
+\section*{Appendix D: msg_types.h}
+\begin{tiny}
+\lstinputlisting{../msg_types.h}
+\end{tiny}
+\newpage
+\section*{Appendix D: strings.h}
+\begin{tiny}
+\lstinputlisting{../strings.h}
+\end{tiny}
 \end{document}
