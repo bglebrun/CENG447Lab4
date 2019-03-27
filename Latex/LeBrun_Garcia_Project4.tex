@@ -94,18 +94,19 @@ volts of potential on the rail and appropriately light the LED.
 
 \newpage
 \section*{Implementation}
+Our program stores global state information in a struct named \textit{STATE}. This structure is used to conveniently provide functions with state information through a single object.
 
 \subsection*{int main(void)}
-Performs startup logic by calling \textit{initUART} and \textit{initPins}, then loops forever using a 'while(1)' empty loop. After startup, program is entirely interrupt driven. 
+Performs startup logic by calling \textit{initUART}, \textit{initPins}, and \textit{createDefaultState}, then loops forever using a 'while(1)' empty loop. After startup, program is entirely interrupt driven.
 
 \subsection*{ISR(USART\_RX\_vect) (interrupt)}
 Every character of user input is handled by this function, which inserts the character into the \textit{iobuff} character array. The program expects input to be terminated with a carriage-return ('\verb+\r+'), at which point the \textit{processMessage} will handle the input, and the buffer will be cleared.
-\subsection*{processMessage(char* str)}
+\subsection*{void processMessage(STATE* s)}
 This function tokenizes the input and calls a series of state modifying functions that will each perform error checking. If the input passes validation checks, the command is executed, and the appropriate operations are performed.
 Invokes \textit{setMessageType}, \textit{setPinNumber}, and \textit{setPinMode} to perform error checking and state setting. If input is empty the invalid command message is printed. The standard library \textit{strtok} function is used to parse the input, and three pointers \textit{combuff}, \textit{pinbuff}, and \textit{setbuff} are used to access the relevant segments.
-\subsection*{void setMessageType(char* str)}
-Checks the command segment of the input to determine if it is one of the valid commands. If it is not, the \textit{type} state variable is set to MSG\_INV and the \textit{inv} state variable is set to INVALID\_COMMAND. Otherwise the \textit{type} variable is set to MSG\_SET or MSG\_READ if the command was 'write' or 'read' respectively. Input can be capitalized (HIGH) or lowercase (low) but not mixed (HiGh).
-\subsection*{void setPinNumber(char* str, enum MSG\_TYPE mode)}
+\subsection*{void setMessageType(STATE state)}
+Checks the command segment of the input, which is stored in the state parameter, to determine if it is one of the valid commands. If it is not, the \textit{type} state variable is set to MSG\_INV and the \textit{inv} state variable is set to INVALID\_COMMAND. Otherwise the \textit{type} variable is set to MSG\_SET or MSG\_READ if the command was 'write' or 'read' respectively. Input can be capitalized (HIGH) or lowercase (low) but not mixed (HiGh).
+\subsection*{void setPinNumber(STATE* state)}
 Once the command has been validated, the next segment of the input is processed to determine which pin the operation applies to (assuming the pin is permissible for that operation). If the pin is invalid for the command, the \textit{type} variable is set to MSG\_INV, the \textit{inv} variable is set to INVALID\_PIN, and \textit{pin} is set to PIN\_NONE. Otherwise pin will have one of the following values:
 \begin{itemize}
 \item PIN\_EIGHT\\
@@ -113,8 +114,12 @@ Once the command has been validated, the next segment of the input is processed 
 \item PIN\_TEN\\
 \item PIN\_ELEVEN
 \end{itemize}
-\subsection*{setPinMode(char* str)}
+\subsection*{void setPinMode(STATE* state)}
 If the selected command was 'write' then this function determines if the pin is to be set 'high' or 'low'. if the input is neither 'high' nor 'low' the \textit{pin} value is set to NONE, the \textit{type} variable is set to MSG\_INV, and \textit{inv} is set to INVALID\_STATE.
+\subsection*{void setReadState(int pinStatus, STATE* state)}
+Sets the \textit{readState} variable in the state struct to HIGH if pinStatus is 0, LOW if pinStatus is 1, and NONE if pinStatus has any other value. The value of pinStatus is expected to be the result of \textit{ReadPinDigital}.
+\subsection*{STATE createDefaultState()}
+Functions as a constructor for the STATE object as C does not support the concept of a constructor natively like C++ does. Initializes a new STATE object to expected default values and returns it.
 \subsection*{void initUART()}
 Configure the UART baud rate and RX Complete interrupt. 
 \subsection*{void printMsg()}
@@ -212,8 +217,13 @@ The following files are included as appendices:
 \item main.c - entry file, manages initialization logic and interrupt handling\\
 \item pinops.h - header file for the pin operations file \\
 \item pinops.c - handles pin operations\\
-\item strings.h - has static string constants for testing and printing\\
-\item msg\_types.h - has enumerations for program state and output\\
+\item strings.h - has static string constants for testing and printing. Also declares the \textit{printMsg} function for outputting to the terminal.\\
+\item strings.c - defines the \textit{printMsg} function.\\
+\item atoi.h - declaration for the atoi function.\\
+\item atoi.c - definition for the atoi function.\\
+\item state.h - contains the definition for the STATE struct and declarations for state setting functions.
+\item state.c - contains the definitions for the state setting functions.
+\item enums.h - has enumerations for program state and output\\
 \end{itemize}
 \newpage
 
@@ -232,13 +242,33 @@ The following files are included as appendices:
 \lstinputlisting{../pinops.c}
 \end{tiny}
 \newpage
-\section*{Appendix D: msg_types.h}
+\section*{Appendix D: enums.h}
 \begin{tiny}
-\lstinputlisting{../msg_types.h}
+\lstinputlisting{../enums.h}
 \end{tiny}
 \newpage
-\section*{Appendix D: strings.h}
+\section*{Appendix E: strings.h}
 \begin{tiny}
 \lstinputlisting{../strings.h}
+\end{tiny}
+\section*{Appendix F: strings.c}
+\begin{tiny}
+\lstinputlisting{../strings.c}
+\end{tiny}
+\section*{Appendix G: atoi.h}
+\begin{tiny}
+\lstinputlisting{../atoi.h}
+\end{tiny}
+\section*{Appendix H: atoi.c}
+\begin{tiny}
+\lstinputlisting{../atoi.c}
+\end{tiny}
+\section*{Appendix I: state.h}
+\begin{tiny}
+\lstinputlisting{../state.h}
+\end{tiny}
+\section*{Appendix J: state.c}
+\begin{tiny}
+\lstinputlisting{../state.c}
 \end{tiny}
 \end{document}
